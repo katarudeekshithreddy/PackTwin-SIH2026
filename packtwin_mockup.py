@@ -1,51 +1,66 @@
 import streamlit as st
-import pandas as pd
-import time
 
-st.set_page_config(page_title="PackTwin - AI Packaging Engine", layout="wide")
+st.set_page_config(layout="wide", page_title="PackTwin Prototype")
 
 st.title("🌱 PackTwin: Physics-Informed Compliance Engine")
-st.subheader("Client: Rajan's Millet Snacks | Region: Karnataka | Target: 90 Days")
+st.markdown("**Client:** Rajan's Millet Snacks | **Region:** Karnataka | **Target:** 90 Days | **Functional Unit:** 100g pack")
 
-st.divider()
+# User-adjustable sliders
+st.sidebar.header("Soft Scoring Weights")
+st.sidebar.caption("Adjust criteria importance for final ranking")
+st.sidebar.slider("Shelf-Life Margin", 0, 100, 30)
+st.sidebar.slider("Cost per Pack", 0, 100, 50)
+st.sidebar.slider("Carbon Footprint", 0, 100, 20)
+st.sidebar.slider("Local Availability", 0, 100, 40)
 
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Retrieval Accuracy", "91%", "+3% vs baseline")
-col2.metric("Simulation Latency", "0.18 s", "-0.05 s")
-col3.metric("FSSAI Coverage", "Indexed", "Phase 1")
-col4.metric("Physics Error", "~15%", "vs empirical")
+st.subheader("🏆 Top 3 Ranked Packaging Options")
 
-st.divider()
-st.markdown("### 🏆 Top 3 Ranked Packaging Options")
+col1, col2, col3 = st.columns(3)
 
-c1, c2, c3 = st.columns(3)
-
-with c1:
+with col1:
     st.success("🥇 Option 1: Bagasse Outer + PLA Inner")
-    st.write("**Est. Shelf Life:** 95 days")
+    st.write("**Est. Shelf Life:** 92–105 days")
     st.write("**Cost/Pack:** ₹1.10 (Local Agri-waste)")
-    st.write("**Carbon Footprint:** 0.04 kg CO2e")
-    st.write("**Compliance:** FSSAI Sub-reg 3.2.1 ✅")
-    st.progress(95)
+    st.write("**Carbon:** 0.004 kg CO₂e / 100g")
+    st.write("**Compliance:** FSSAI Reg. 3(1) ✅")
+    st.caption("*Requirements checked; NABL certificate required for final use.*")
+    st.markdown("**Reason:** Meets 90-day target with lowest carbon & local availability.")
+    st.progress(0.88, text="Overall Suitability Score: 88/100")
 
-with c2:
+with col2:
     st.info("🥈 Option 2: Banana Fibre + Metallized CPP")
-    st.write("**Est. Shelf Life:** 110 days")
+    st.write("**Est. Shelf Life:** 100–115 days")
     st.write("**Cost/Pack:** ₹1.45")
-    st.write("**Carbon Footprint:** 0.08 kg CO2e")
-    st.write("**Compliance:** FSSAI Reg 4.1 ✅")
-    st.progress(85)
+    st.write("**Carbon:** 0.008 kg CO₂e / 100g")
+    st.write("**Compliance:** FSSAI Reg. 3(1) ✅")
+    st.caption("*Requirements checked; NABL certificate required for final use.*")
+    st.markdown("**Reason:** Higher cost penalty reduces overall rank despite better barrier.")
+    st.progress(0.76, text="Overall Suitability Score: 76/100")
 
-with c3:
+with col3:
     st.warning("🥉 Option 3: Standard Multi-layer Plastic (Baseline)")
-    st.write("**Est. Shelf Life:** 120 days")
+    st.write("**Est. Shelf Life:** 115–125 days")
     st.write("**Cost/Pack:** ₹0.90")
-    st.write("**Carbon Footprint:** 0.35 kg CO2e")
-    st.write("**Compliance:** FSSAI Reg 4.1 ✅")
-    st.progress(70)
+    st.write("**Carbon:** 0.035 kg CO₂e / 100g")
+    st.write("**Compliance:** FSSAI Reg. 3(1) ✅")
+    st.caption("*Requirements checked; NABL certificate required for final use.*")
+    st.markdown("**Reason:** Lowest cost, but heavy carbon penalty lowers rank.")
+    st.progress(0.65, text="Overall Suitability Score: 65/100")
 
-st.markdown("---")
-st.markdown("### 📄 RAG Trace: FSSAI Clause Retrieval")
-st.code('''[Document: Packaging_Regs_2018.pdf | Chunk: 42]
-Sub-regulation 3.2.1: "Primary food packaging materials must be of food-grade quality. Bio-based plastics like Polylactic Acid (PLA) are permitted for direct contact with dry foods..."
-Cosine Similarity Score: 0.94''', language="text")
+st.divider()
+
+with st.expander("🔍 System Performance & RAG Trace"):
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Retrieval Accuracy", "91%", "Tested on n=30 queries", delta_color="off")
+    m2.metric("Simulation Latency", "0.18 s", "-0.05 s (optimized)", delta_color="inverse")
+    m3.metric("Physics Error", "~15%", "vs empirical data", delta_color="off")
+    m4.metric("FSSAI Coverage", "Indexed", "Phase 1", delta_color="off")
+    
+    st.markdown("**RAG Trace: FSSAI Clause Retrieval**")
+    st.code('''[Document: FSSAI_Packaging_Regs_2018.pdf | Chunk: 14]
+Regulation 3 (General Requirements), Clause (1):
+"Every food business operator shall ensure that the packaging material used shall be in accordance with these regulations:
+(a) The packaging material shall not endanger human health;
+(b) Bring about a change in the composition of the food or its organoleptic characteristics."
+
+Cosine Similarity Score: 0.92''', language="text")
